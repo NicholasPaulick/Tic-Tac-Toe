@@ -1,6 +1,7 @@
 import pygame as pg, sys, numpy as np
 from math import inf as infinity
 from pygame.font import Font
+import random
 
 pg.init()
 pg.font.init()
@@ -12,9 +13,9 @@ WIN_LINE_WIDTH = 15
 BOARD_ROWS = 3
 BOARD_COLS = 3
 SQUARE_SIZE = 200
-CIRCLE_RADIUS = 60
-CIRCLE_WIDTH = 15
-CROSS_WIDTH = 25
+O_RADIUS = 60
+O_WIDTH = 15
+X_WIDTH = 25
 SPACE = 55
 
 TITLEFONT = pg.font.SysFont('Comic Sans MS', 60)
@@ -40,7 +41,6 @@ Controls = pg.Rect(0, 0, 600, 600)
 
 board = np.zeros((BOARD_ROWS, BOARD_COLS))
 
-
 def draw_lines():
     pg.draw.line(screen, LINE_COLOR, (0, SQUARE_SIZE), (WIDTH,
                      SQUARE_SIZE), LINE_WIDTH)
@@ -51,7 +51,6 @@ def draw_lines():
     pg.draw.line(screen, LINE_COLOR, (2 * SQUARE_SIZE, 0), (2
                      * SQUARE_SIZE, HEIGHT), LINE_WIDTH)
 
-
 def draw_XO():
     for row in range(BOARD_ROWS):
         for column in range(BOARD_COLS):
@@ -59,29 +58,26 @@ def draw_XO():
                 pg.draw.circle(screen, O_COLOR, (int(column
                                    * SQUARE_SIZE + SQUARE_SIZE // 2),
                                    int(row * SQUARE_SIZE + SQUARE_SIZE
-                                   // 2)), CIRCLE_RADIUS, CIRCLE_WIDTH)
+                                   // 2)), O_RADIUS, O_WIDTH)
             elif board[row][column] == 1:
                 pg.draw.line(screen, X_COLOR, (column
                                  * SQUARE_SIZE + SPACE, row
                                  * SQUARE_SIZE + SQUARE_SIZE - SPACE),
                                  (column * SQUARE_SIZE + SQUARE_SIZE
                                  - SPACE, row * SQUARE_SIZE + SPACE),
-                                 CROSS_WIDTH)
+                                 X_WIDTH)
                 pg.draw.line(screen, X_COLOR, (column
                                  * SQUARE_SIZE + SPACE, row
                                  * SQUARE_SIZE + SPACE), (column
                                  * SQUARE_SIZE + SQUARE_SIZE - SPACE,
                                  row * SQUARE_SIZE + SQUARE_SIZE
-                                 - SPACE), CROSS_WIDTH)
-
+                                 - SPACE), X_WIDTH)
 
 def mark_square(row, column, player):
     board[row][column] = player
 
-
 def available_square(row, column):
     return board[row][column] == 0
-
 
 def is_board_full():
     for row in range(BOARD_ROWS):
@@ -89,7 +85,6 @@ def is_board_full():
             if board[row][column] == 0:
                 return False
     return True
-
 
 def check_win(player):
     global playerscore
@@ -276,31 +271,59 @@ def restart():
 draw_lines()
 draw_information()
 player = -1
+mode = 2
 game_over = False
 
 while True:
     for event in pg.event.get():
         #Gets Clicks
-        if event.type == pg.MOUSEBUTTONDOWN and not game_over:
-            mouseX = event.pos[0]
-            mouseY = event.pos[1]
-            clicked_row = int(mouseY // SQUARE_SIZE)
-            clicked_column = int(mouseX // SQUARE_SIZE)
-            try:
-                #Player Turn
-                if available_square(clicked_row, clicked_column):
-                    mark_square(clicked_row, clicked_column, player)
-                    draw_XO()
-                    if check_win(player) or check_tie():
-                        draw_information()
-                        game_over = True
-                        break
-                    player = 1
-                    
-                    #AI Turn
-                    if player == 1:
+        # PVP
+        if mode == 1:
+            if event.type == pg.MOUSEBUTTONDOWN and not game_over:
+                mouseX = event.pos[0]
+                mouseY = event.pos[1]
+                clicked_row = int(mouseY // SQUARE_SIZE)
+                clicked_column = int(mouseX // SQUARE_SIZE)
+                try:
+                    #Player Turn
+                    if available_square(clicked_row, clicked_column):
+                        mark_square(clicked_row, clicked_column, player)
+                        draw_XO()
+                        if check_win(player) or check_tie():
+                            draw_information()
+                            game_over = True
+                            break
+                        player = -player
+                        if check_win(player) or check_tie():
+                            draw_information()
+                            game_over = True
+                            break
+                except:
+                    pass
+        # AI Bot
+        elif mode == 2:
+            if event.type == pg.MOUSEBUTTONDOWN and not game_over:
+                mouseX = event.pos[0]
+                mouseY = event.pos[1]
+                clicked_row = int(mouseY // SQUARE_SIZE)
+                clicked_column = int(mouseX // SQUARE_SIZE)
+                try:
+                    #Player Turn
+                    if available_square(clicked_row, clicked_column):
+                        mark_square(clicked_row, clicked_column, player)
+                        draw_XO()
+                        if check_win(player) or check_tie():
+                            draw_information()
+                            game_over = True
+                            break
+                        player = 1
+
+                        #AI Turn
                         depth = len(empty_cells(board))
-                        move = minimax(board, depth)
+                        if depth >= 4:
+                            move = minimax(board, 4)
+                        else:
+                            move = minimax(board, depth)
                         row, column = move[0], move[1]
                         mark_square(row, column, player)
                         draw_XO()
@@ -309,15 +332,74 @@ while True:
                             game_over = True
                             break
                         player = -1
-            except:
-                pass
-            
+                except:
+                    pass
+        #Random Bot
+        elif mode == 3:
+            if event.type == pg.MOUSEBUTTONDOWN and not game_over:
+                mouseX = event.pos[0]
+                mouseY = event.pos[1]
+                clicked_row = int(mouseY // SQUARE_SIZE)
+                clicked_column = int(mouseX // SQUARE_SIZE)
+                try:
+                    #Player Turn
+                    if available_square(clicked_row, clicked_column):
+                        mark_square(clicked_row, clicked_column, player)
+                        draw_XO()
+                        if check_win(player) or check_tie():
+                            draw_information()
+                            game_over = True
+                            break
+                        player = 1
+                        
+                        #AI Turn
+                        cells = empty_cells(board)
+                        xy = cells[random.randint(0, (len(cells)-1))]
+                        mark_square(xy[0], xy[1], player)
+                        draw_XO()
+                        if check_win(player) or check_tie():
+                            draw_information()
+                            game_over = True
+                            break
+                        player = -1
+                except:
+                    pass
         #Restart Game
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_r:
                 restart()
                 player = -1
                 game_over = False
+                
+        # Change modes
+        if event.type == pg.KEYDOWN:
+            #Mode 1
+            if event.key == pg.K_1:
+                restart()
+                player = -1
+                game_over = False
+                mode = 1
+                playerscore = 0
+                computerscore = 0
+                ties = 0
+            #Mode 2
+            if event.key == pg.K_2:
+                restart()
+                player = -1
+                game_over = False
+                mode = 2
+                playerscore = 0
+                computerscore = 0
+                ties = 0
+            #Mode 3
+            if event.key == pg.K_3:
+                restart()
+                player = -1
+                game_over = False
+                mode = 3
+                playerscore = 0
+                computerscore = 0
+                ties = 0
 
         #Exits Game
         if event.type == pg.QUIT or event.type == pg.KEYDOWN \
