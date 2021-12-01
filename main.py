@@ -276,6 +276,7 @@ player = -1
 mode = 2
 game_over = False
 
+#Keeps the game running
 while True:
     for event in pg.event.get():
         #Gets Clicks
@@ -373,31 +374,31 @@ while True:
         if event.type == pg.KEYDOWN:
             #Mode 1
             if event.key == pg.K_1:
-                restart()
                 player = -1
                 game_over = False
-                mode = 1
                 playerscore = 0
                 computerscore = 0
                 ties = 0
+                restart()
+                mode = 1
             #Mode 2
             if event.key == pg.K_2:
-                restart()
                 player = -1
                 game_over = False
-                mode = 2
                 playerscore = 0
                 computerscore = 0
                 ties = 0
+                restart()
+                mode = 2
             #Mode 3
             if event.key == pg.K_3:
-                restart()
                 player = -1
                 game_over = False
-                mode = 3
                 playerscore = 0
                 computerscore = 0
                 ties = 0
+                restart()
+                mode = 3
 
         #Exits Game
         if event.type == pg.QUIT or event.type == pg.KEYDOWN \
