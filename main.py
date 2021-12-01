@@ -187,14 +187,16 @@ def draw_information():
     TITLE = TITLEFONT.render("TIC-TAC-TOE", False, (255, 255, 255))
     RESTARTINFO = INFOFONT.render("To restart the game press 'r'", False, (255, 255, 255))
     QUITINFO = INFOFONT.render("Quit by pressing 'q'", False, (255, 255, 255))
+    DIFFINFO = INFOFONT.render("1:PVP     2:PVE (Hard)    3:PVE (Easy)", False, (255, 255, 255))
     PLAYERSCORE = SCOREFONT.render((f"Player Score: {str(playerscore)}"), False, (255, 255, 255))
     COMPUTERSCORE = SCOREFONT.render((f"Computer Score: {str(computerscore)}"), False, (255, 255, 255))
     TIESCORE = SCOREFONT.render((f"Tie(s): {str(ties)}"), False, (255, 255, 255))
     screen.blit(canvas, (0, 0), GameDisplay)
     screen.blit(canvas, (600, 0), Controls)
     screen.blit(TITLE, (700,0), Controls)
-    screen.blit(RESTARTINFO, (610,570), Controls)
+    screen.blit(RESTARTINFO, (610, 570), Controls)
     screen.blit(QUITINFO, (1000,570), Controls)
+    screen.blit(DIFFINFO, (720, 540), Controls)
     screen.blit(PLAYERSCORE, (630, 380), Controls)
     screen.blit(COMPUTERSCORE, (910, 380), Controls)
     screen.blit(TIESCORE, (820, 450), Controls)
@@ -294,10 +296,6 @@ while True:
                             game_over = True
                             break
                         player = -player
-                        if check_win(player) or check_tie():
-                            draw_information()
-                            game_over = True
-                            break
                 except:
                     pass
         # AI Bot
@@ -320,8 +318,8 @@ while True:
 
                         #AI Turn
                         depth = len(empty_cells(board))
-                        if depth >= 4:
-                            move = minimax(board, 4)
+                        if depth >= 6:
+                            move = minimax(board, 6)
                         else:
                             move = minimax(board, depth)
                         row, column = move[0], move[1]
