@@ -1,23 +1,24 @@
-import pygame as pg, sys, numpy as np
+import pygame as pg, sys
 from math import inf as infinity
 from pygame.font import Font
 import random
 
+# Gets pygame running
 pg.init()
 pg.font.init()
 
+# Sizing for the elements
 WIDTH = 600
 HEIGHT = 600
 LINE_WIDTH = 15
 WIN_LINE_WIDTH = 15
-BOARD_ROWS = 3
-BOARD_COLS = 3
 SQUARE_SIZE = 200
 O_RADIUS = 60
 O_WIDTH = 15
 X_WIDTH = 25
 SPACE = 55
 
+# Font and Color Info
 TITLEFONT = pg.font.SysFont('Comic Sans MS', 60)
 INFOFONT = pg.font.SysFont('Comic Sans MS', 20)
 SCOREFONT = pg.font.SysFont('Comic Sans MS', 30)
@@ -26,21 +27,24 @@ LINE_COLOR = (0, 0, 0)
 O_COLOR = (0, 0, 0)
 X_COLOR = (255, 255, 255)
 
+# Scores loaded
 playerscore = 0
 computerscore = 0
 ties = 0
 
+# Builds the basic stuff used
 screen = pg.display.set_mode((1200, 600))
 pg.display.set_caption("Tic Tac Toe")
 screen.fill(BACKGROUND)
-
 canvas = pg.Surface((600, 600))
 
 GameDisplay = pg.Rect(600, 0, 600, 1200)
 Controls = pg.Rect(0, 0, 600, 600)
 
-board = np.zeros((BOARD_ROWS, BOARD_COLS))
+# Creates the board and fills it with 0
+board = [[0,0,0],[0,0,0],[0,0,0]]
 
+# Creates the grid in the 3-3
 def draw_lines():
     pg.draw.line(screen, LINE_COLOR, (0, SQUARE_SIZE), (WIDTH,
                      SQUARE_SIZE), LINE_WIDTH)
@@ -51,9 +55,10 @@ def draw_lines():
     pg.draw.line(screen, LINE_COLOR, (2 * SQUARE_SIZE, 0), (2
                      * SQUARE_SIZE, HEIGHT), LINE_WIDTH)
 
+# Draws the X's and O's on the board when clicked
 def draw_XO():
-    for row in range(BOARD_ROWS):
-        for column in range(BOARD_COLS):
+    for row in range(3):
+        for column in range(3):
             if board[row][column] == -1:
                 pg.draw.circle(screen, O_COLOR, (int(column
                                    * SQUARE_SIZE + SQUARE_SIZE // 2),
@@ -73,36 +78,22 @@ def draw_XO():
                                  row * SQUARE_SIZE + SQUARE_SIZE
                                  - SPACE), X_WIDTH)
 
-def mark_square(row, column, player):
-    board[row][column] = player
-
+# Checks if the square is avaiable
 def available_square(row, column):
     return board[row][column] == 0
 
-def is_board_full():
-    for row in range(BOARD_ROWS):
-        for column in range(BOARD_COLS):
-            if board[row][column] == 0:
-                return False
-    return True
+# Marks the spot the player chose
+def mark_square(row, column, player):
+    board[row][column] = player
 
+# Checks to see if the player wins and incriments the score if true
 def check_win(player):
     global playerscore
     global computerscore
-    for column in range(BOARD_COLS):
+    for column in range(3):
         if board[0][column] == player and board[1][column] == player \
             and board[2][column] == player:
             vertical_winning_line(column, player)
-            if player == -1:
-                playerscore += 1
-            elif player == 1:
-                computerscore += 1
-            return True
-
-    for row in range(BOARD_ROWS):
-        if board[row][0] == player and board[row][1] == player \
-            and board[row][2] == player:
-            horizontal_winning_line(row, player)
             if player == -1:
                 playerscore += 1
             elif player == 1:
@@ -116,6 +107,16 @@ def check_win(player):
         elif player == 1:
             computerscore += 1
         return True
+    
+    for row in range(3):
+        if board[row][0] == player and board[row][1] == player \
+            and board[row][2] == player:
+            horizontal_winning_line(row, player)
+            if player == -1:
+                playerscore += 1
+            elif player == 1:
+                computerscore += 1
+            return True
 
     if board[0][0] == player and board[1][1] == player and board[2][2] == player:
         draw_desc_diagonal(player)
@@ -126,17 +127,7 @@ def check_win(player):
         return True
     return False
 
-
-def vertical_winning_line(column, player):
-    posX = column * SQUARE_SIZE + SQUARE_SIZE // 2
-    if player == -1:
-        color = O_COLOR
-    elif player == 1:
-        color = X_COLOR
-    pg.draw.line(screen, color, (posX, 15), (posX, HEIGHT - 15),
-                     LINE_WIDTH)
-
-
+# Draws the different winning lines in the different orentations
 def horizontal_winning_line(row, player):
     posY = row * SQUARE_SIZE + SQUARE_SIZE // 2
     if player == -1:
@@ -145,8 +136,14 @@ def horizontal_winning_line(row, player):
         color = X_COLOR
     pg.draw.line(screen, color, (15, posY), (WIDTH - 15, posY),
                      WIN_LINE_WIDTH)
-
-
+def vertical_winning_line(column, player):
+    posX = column * SQUARE_SIZE + SQUARE_SIZE // 2
+    if player == -1:
+        color = O_COLOR
+    elif player == 1:
+        color = X_COLOR
+    pg.draw.line(screen, color, (posX, 15), (posX, HEIGHT - 15),
+                     LINE_WIDTH)
 def draw_asc_diagonal(player):
     if player == -1:
         color = O_COLOR
@@ -154,8 +151,6 @@ def draw_asc_diagonal(player):
         color = X_COLOR
     pg.draw.line(screen, color, (15, HEIGHT - 15), (WIDTH - 15,
                      15), WIN_LINE_WIDTH)
-
-
 def draw_desc_diagonal(player):
     if player == -1:
         color = O_COLOR
@@ -182,25 +177,6 @@ def empty_cells(board):
 
     return cells
 
-# Draws game info to the screen
-def draw_information():
-    TITLE = TITLEFONT.render("TIC-TAC-TOE", False, (255, 255, 255))
-    RESTARTINFO = INFOFONT.render("To restart the game press 'r'", False, (255, 255, 255))
-    QUITINFO = INFOFONT.render("Quit by pressing 'q'", False, (255, 255, 255))
-    DIFFINFO = INFOFONT.render("1:PVP     2:PVE (Hard)    3:PVE (Easy)", False, (255, 255, 255))
-    PLAYERSCORE = SCOREFONT.render((f"Player Score: {str(playerscore)}"), False, (255, 255, 255))
-    COMPUTERSCORE = SCOREFONT.render((f"Computer Score: {str(computerscore)}"), False, (255, 255, 255))
-    TIESCORE = SCOREFONT.render((f"Tie(s): {str(ties)}"), False, (255, 255, 255))
-    screen.blit(canvas, (0, 0), GameDisplay)
-    screen.blit(canvas, (600, 0), Controls)
-    screen.blit(TITLE, (700,0), Controls)
-    screen.blit(RESTARTINFO, (610, 570), Controls)
-    screen.blit(QUITINFO, (1000,570), Controls)
-    screen.blit(DIFFINFO, (720, 540), Controls)
-    screen.blit(PLAYERSCORE, (630, 380), Controls)
-    screen.blit(COMPUTERSCORE, (910, 380), Controls)
-    screen.blit(TIESCORE, (820, 450), Controls)
-
 #### AI Stuff
 # Decides if this is a good play
 def evaluate(board):
@@ -215,12 +191,12 @@ def evaluate(board):
 
 # Did Someone Win
 def wins(board, player):
-    for column in range(BOARD_COLS):
+    for column in range(3):
         if board[0][column] == player and board[1][column] == player \
             and board[2][column] == player:
             return True
 
-    for row in range(BOARD_ROWS):
+    for row in range(3):
         if board[row][0] == player and board[row][1] == player \
             and board[row][2] == player:
             return True
@@ -262,14 +238,33 @@ def minimax(board, depth, player=1):
 def restart():
     screen.fill(BACKGROUND)
     draw_lines()
-    for row in range(BOARD_ROWS):
-        for column in range(BOARD_COLS):
+    for row in range(3):
+        for column in range(3):
             board[row][column] = 0
     screen.blit(canvas, (0, 0), GameDisplay)
     screen.blit(canvas, (600, 0), Controls)
     draw_information()
 
+# Draws game info to the screen
+def draw_information():
+    TITLE = TITLEFONT.render("TIC-TAC-TOE", False, (255, 255, 255))
+    RESTARTINFO = INFOFONT.render("To restart the game press 'r'", False, (255, 255, 255))
+    QUITINFO = INFOFONT.render("Quit by pressing 'q'", False, (255, 255, 255))
+    DIFFINFO = INFOFONT.render("1:PVP     2:PVE (Hard)    3:PVE (Easy)", False, (255, 255, 255))
+    PLAYERSCORE = SCOREFONT.render((f"Player Score: {str(playerscore)}"), False, (255, 255, 255))
+    COMPUTERSCORE = SCOREFONT.render((f"Computer Score: {str(computerscore)}"), False, (255, 255, 255))
+    TIESCORE = SCOREFONT.render((f"Tie(s): {str(ties)}"), False, (255, 255, 255))
+    screen.blit(canvas, (0, 0), GameDisplay)
+    screen.blit(canvas, (600, 0), Controls)
+    screen.blit(TITLE, (700,0), Controls)
+    screen.blit(RESTARTINFO, (610, 570), Controls)
+    screen.blit(QUITINFO, (1000,570), Controls)
+    screen.blit(DIFFINFO, (720, 540), Controls)
+    screen.blit(PLAYERSCORE, (630, 380), Controls)
+    screen.blit(COMPUTERSCORE, (910, 380), Controls)
+    screen.blit(TIESCORE, (820, 450), Controls)
 
+# Draws the lines and information on the first run and tells the game what mode to be in
 draw_lines()
 draw_information()
 player = -1
