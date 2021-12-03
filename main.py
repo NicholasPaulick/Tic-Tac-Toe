@@ -1,7 +1,6 @@
-import pygame as pg, sys
+import pygame as pg, random, sys
 from math import inf as infinity
 from pygame.font import Font
-import random
 
 # Gets pygame running
 pg.init()
@@ -16,7 +15,7 @@ SQUARE_SIZE = 200
 O_RADIUS = 60
 O_WIDTH = 15
 X_WIDTH = 25
-SPACE = 55
+SPACE = 60
 
 # Font and Color Info
 TITLEFONT = pg.font.SysFont('Comic Sans MS', 60)
@@ -42,7 +41,9 @@ GameDisplay = pg.Rect(600, 0, 600, 1200)
 Controls = pg.Rect(0, 0, 600, 600)
 
 # Creates the board and fills it with 0
-board = [[0,0,0],[0,0,0],[0,0,0]]
+board = [[0,0,0],
+         [0,0,0],
+         [0,0,0]]
 
 # Creates the grid in the 3-3
 def draw_lines():
@@ -55,7 +56,7 @@ def draw_lines():
     pg.draw.line(screen, LINE_COLOR, (2 * SQUARE_SIZE, 0), (2
                      * SQUARE_SIZE, HEIGHT), LINE_WIDTH)
 
-# Draws the X's and O's on the board when clicked
+# Draws the X's and O's on the screen
 def draw_XO():
     for row in range(3):
         for column in range(3):
@@ -260,9 +261,9 @@ def draw_information():
     screen.blit(RESTARTINFO, (610, 570), Controls)
     screen.blit(QUITINFO, (1000,570), Controls)
     screen.blit(DIFFINFO, (720, 540), Controls)
-    screen.blit(PLAYERSCORE, (630, 380), Controls)
-    screen.blit(COMPUTERSCORE, (910, 380), Controls)
-    screen.blit(TIESCORE, (820, 450), Controls)
+    screen.blit(PLAYERSCORE, (630, 350), Controls)
+    screen.blit(COMPUTERSCORE, (910, 350), Controls)
+    screen.blit(TIESCORE, (820, 430), Controls)
 
 # Draws the lines and information on the first run and tells the game what mode to be in
 draw_lines()
