@@ -306,21 +306,25 @@ while True:
                         if check_win(player):
                             draw_information()
                             if player == -1:
+                                draw_information()
+                                game_over = True
+                                screen.blit(PvpP1, (0, 0), Controls)
                                 pg.mixer.Sound.play(Pvp1Sound)
                                 pg.mixer.Sound.stop()
-                                screen.blit(PvpP1, (0, 0), Controls)
+                                break
                             else:
+                                draw_information()
+                                screen.blit(PvpP2, (0, 0), Controls)
+                                game_over = True
                                 pg.mixer.Sound.play(Pvp2Sound)
                                 pg.mixer.Sound.stop()
-                                screen.blit(PvpP2, (0, 0), Controls)
-                            game_over = True
-                            break
+                                break
                         elif check_tie():
-                            pg.mixer.Sound.play(TiesSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(Tiegame, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(TiesSound)
+                            pg.mixer.Sound.stop()
                             break
                         player = -player
                 except:
@@ -338,18 +342,18 @@ while True:
                         mark_square(clicked_row, clicked_column, player)
                         draw_XO()
                         if check_win(player):
-                            pg.mixer.Sound.play(PvePlayerSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(PvePlayerWin, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(PvePlayerSound)
+                            pg.mixer.Sound.stop()
                             break
                         elif check_tie():
-                            pg.mixer.Sound.play(TiesSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(Tiegame, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(TiesSound)
+                            pg.mixer.Sound.stop()
                             break
                         player = 1
 
@@ -363,18 +367,18 @@ while True:
                         mark_square(row, column, player)
                         draw_XO()
                         if check_win(player):
+                            screen.blit(PveCompWin, (0, 0), Controls)
+                            game_over = True
                             draw_information()
                             pg.mixer.Sound.play(PveCompSound)
                             pg.mixer.Sound.stop()
-                            screen.blit(PveCompWin, (0, 0), Controls)
-                            game_over = True
                             break
                         elif check_tie():
-                            pg.mixer.Sound.play(TiesSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(Tiegame, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(TiesSound)
+                            pg.mixer.Sound.stop()
                             break
                         player = -1
                 except:
@@ -392,18 +396,18 @@ while True:
                         mark_square(clicked_row, clicked_column, player)
                         draw_XO()
                         if check_win(player):
-                            pg.mixer.Sound.play(PvePlayerSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(PvePlayerWin, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(PvePlayerSound)
+                            pg.mixer.Sound.stop()
                             break
                         elif check_tie():
-                            pg.mixer.Sound.play(TiesSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(Tiegame, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(TiesSound)
+                            pg.mixer.Sound.stop()
                             break
                         player = 1
                         
@@ -413,18 +417,18 @@ while True:
                         mark_square(xy[0], xy[1], player)
                         draw_XO()
                         if check_win(player):
-                            pg.mixer.Sound.play(PveCompSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(PveCompWin, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(PveCompSound)
+                            pg.mixer.Sound.stop()
                             break
                         elif check_tie():
-                            pg.mixer.Sound.play(TiesSound)
-                            pg.mixer.Sound.stop()
                             draw_information()
                             screen.blit(Tiegame, (0, 0), Controls)
                             game_over = True
+                            pg.mixer.Sound.play(TiesSound)
+                            pg.mixer.Sound.stop()
                             break
                         player = -1
                 except:
